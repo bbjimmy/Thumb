@@ -1,12 +1,12 @@
 # Thumb
-Generate a Thumbnail of an image for use on the web etc.
+Generate a Thumbnail of an image for use on the web etc in Haiku.
 
 
 # Building:
 
-required: 
+required:
 
-yab and yab-ide must be installed to build Thumb.
+Haiku with yab and yab-ide installed
 
 building:
 
@@ -38,9 +38,9 @@ P 		Change Height to percentage 1 to 100.
 T type 		Output file type can be:
 
 
-		png, tiff, ppm, tga
+png, tiff, ppm, tga
 
-		The default output format is jpg.
+The default output format is jpg.
 
 Example:
 
