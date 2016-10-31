@@ -10,7 +10,7 @@ Haiku with yab and yab-ide installed
 
 building:
 
-Open a Terminel and cd to the Thumb directory
+Open a Terminal and cd to the Thumb directory
 
 type : build.sh
 
