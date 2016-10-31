@@ -1,0 +1,135 @@
+#!yab
+x=peek("argument")
+if x < 2  help_arguments()
+parseargs()
+
+
+ID$="bmp1"
+ImageFile$=fn$
+
+Format$=fmt$
+Bitmap$="bmp2"
+
+
+
+
+ErrCode = BITMAP IMAGE ImageFile$, Bitmap$
+if ErrCode=1 print "file not found "+fn$:exit
+if ErrCode=2 print "the translator roster was not found, i.e. the system does not understand the image type":exit
+if ErrCode=3 print "translation failed, maybe the file is corrupted?":exit
+if ErrCode=4 print "detaching the bitmap failed, maybe out of memory?" :exit
+w=BITMAP GET Bitmap$, "Width"
+h=BITMAP GET Bitmap$, "height"
+if upper$(p$)="P" then
+ht=val(ht$)/100
+wt=ht
+hh=ht*h
+ww=wt*w
+
+else
+
+hh=val(ht$)
+
+
+rem ----- get the ratio ----
+
+ ww=(hh*w)/h
+
+end if
+
+
+
+BITMAP int(ww),int(hh), ID$
+
+
+DRAW BITMAP -2,-2 TO int(ww),int(hh), Bitmap$, "Copy", ID$
+BITMAP REMOVE Bitmap$
+
+ErrorCode = BITMAP SAVE ID$, FileName$, Format$
+
+
+
+
+
+sub help_arguments()
+print "Thumb by Jim Saxton version 1.2"
+print "Thumb produces a scaled thumbnail of the original image based"
+print "on the height you provide.The output file will be placed in the"
+print "current working directory."
+print""
+print "USAGE:"
+print "Thumb Filename Height <P> <T type>"
+print ""
+print "Filename: 	includes the path to the input file."
+print "Height 		The height in pixels , minimum  20, for the output file."
+print "P 		Change Height to percentage 1 to 100."
+print "T type 		Output file type can be:"
+print "		png, tiff, ppm, tga"
+print "		The default output format is jpg."
+print""
+print "Example:"
+print "Thumb image.png 50 P T png"
+print ""
+print "This will produce a .png thumbnail 50% as high as the original"
+print "named thumb-image.png"
+print ""
+print "Thumb /boot/home/Desktop/photo.png 50"
+print ""
+print "This will produce a .jpg thumbnail 50 pixels high named thumb-photo.jpg"
+exit
+end sub 
+	
+sub parseargs()
+dim arg$(x)
+for arg=1 to x
+arg$(arg)=peek$ ("argument")
+next 
+fn$=arg$(1)
+ht$=arg$(2)
+fmt$="jpg"
+if val(ht$)<1 help_arguments()
+
+if x=3 p$=arg$(3)
+if x=4 t$ = arg$(3): fmt$= arg$(4)
+if x=5  p$=arg$(3): t$ = arg$(4): fmt$= arg$(5)
+if (x=3  or x=5) and upper$(p$)<>"P" help_arguments()
+if upper$(p$)="P" and val(ht$)>100 then
+help_arguments()
+end if
+if val(ht$)<20 and p$="" ht$="20"
+if x >3 and upper$(t$)<>"T" help_arguments()
+if upper$(t$)="T" then
+fmt$=lower$(fmt$)
+	switch fmt$
+		case "png"
+			break
+		case "tiff" 
+			break
+		case "ppm"
+			break
+		case "tga"
+			break
+		case "jpg"
+			break
+		default
+			help_arguments()
+		end switch
+end if
+filename$=fn$
+
+while (instr(filename$,"/"))
+	filename$=right$(filename$,len(filename$)-instr(filename$,"/"))
+wend
+while (instr(filename$,"."))
+	filename$=left$(filename$,instr(filename$,".")-1)
+wend
+
+FileName$="thumb-"+filename$+"."+fmt$
+
+
+
+
+
+
+end sub
+
